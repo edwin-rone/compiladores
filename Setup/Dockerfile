@@ -30,9 +30,9 @@ RUN touch /etc/xrdp/Xwrapper.config && \
     echo "allowed_users=anybody" > /etc/xrdp/Xwrapper.config
 
 # Crear usuario
-RUN useradd -m -s /bin/bash docker && \
+RUN useradd -m -s /bin/bash docker_user && \
     echo "docker_user:docker_passwd" | chpasswd && \
-    adduser docker sudo
+    adduser docker_user sudo
 
 EXPOSE 3389
 
