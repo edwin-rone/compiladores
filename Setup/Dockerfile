@@ -44,6 +44,6 @@ CMD ["/bin/bash", "-c", "service dbus start && service xrdp start && tail -f /va
 # docker run -d \
 #  --name entorno-compiladores \
 #  -p 3389:3389 \
-#  -v "/Users/geracoh/Documents/gists/FaC/2026-2/docker:/home/docker/proyectos" \
+#  -v "/absolute/path/to/directory/in/host:/home/docker/proyectos" \
 #  --shm-size="1gb" \
 #  compiladores2026
