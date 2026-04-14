@@ -1,6 +1,6 @@
 <p  align="center">
   <img  width="200"  src="https://www.fciencias.unam.mx/sites/default/files/logoFC_2.png"  alt="">  <br>Compiladores  2026-2 <br>
-  Práctica 1: Analizadores léxicos con Lex (Flex) <br> Profesora: Ariel Adara Mercado Martínez
+  Práctica 3: Analizador sintáctico de descenso predictivo <br> Profesora: Ariel Adara Mercado Martínez
 </p>
 
 # Análisis sintáctico descendente predictivo
