@@ -1,0 +1,2 @@
+Flex es una herramienta muy poderosa.
+Nos permite crear analizadores lexicos muy rapido.

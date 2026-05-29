@@ -1,0 +1,4 @@
+El numero cinco es 0b101
+El numero seis es 0b110
+Y aqui hay un ocho: 0b1000
+Esto es texto basura que debe ser ignorado.

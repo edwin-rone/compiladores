@@ -1,0 +1,4 @@
+10 20 30 A
+hola como estas 5 10 B
+100 200 A
+esta linea no termina ni en A ni en B, debe ignorarse por completo.

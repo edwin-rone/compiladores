@@ -1,0 +1,2 @@
+int costo_total = precio @ 5 ;
+float ganancia = costo_total $ ;

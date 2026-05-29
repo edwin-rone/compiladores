@@ -1,0 +1,11 @@
+-- Este es un programa de prueba
+begin
+    integer x, y;
+    x := 10;
+    y := 0b101;
+    if (x <> y) then
+        <* Esto es un comentario
+           multilinea genial *>
+        x := x + 3.14;
+    end
+end

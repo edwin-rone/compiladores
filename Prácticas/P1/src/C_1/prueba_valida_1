@@ -1,0 +1,3 @@
+int base = 10 ;
+float altura = 3.5 ;
+float area = ( base * altura ) / 2 ;

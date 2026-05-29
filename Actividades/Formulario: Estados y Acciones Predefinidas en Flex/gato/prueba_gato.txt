@@ -1,0 +1,11 @@
+X_O
+XXO
+OOX
+
+XOX
+XO_
+_O_
+
+XOX
+XOO
+OXX

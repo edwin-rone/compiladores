@@ -1,0 +1,32 @@
+<Comentario Una Linea, -- Este es un programa de prueba>
+<Palabra Reservada, begin>
+<Identificador, integer>
+<Identificador, x>
+<Simbolo Especial, ,>
+<Identificador, y>
+<Simbolo Especial, ;>
+<Identificador, x>
+<Asignacion, :=>
+<Numero Entero, 10>
+<Simbolo Especial, ;>
+<Identificador, y>
+<Asignacion, :=>
+<Numero Entero, 0>
+<Identificador, b101>
+<Simbolo Especial, ;>
+<Palabra Reservada, if>
+<Simbolo Especial, (>
+<Identificador, x>
+<Operador Relacional, <>>
+<Identificador, y>
+<Simbolo Especial, )>
+<Palabra Reservada, then>
+<Comentario Multilinea, ...>
+<Identificador, x>
+<Asignacion, :=>
+<Identificador, x>
+<Operador Aritmetico, +>
+<Numero Real, 3.14>
+<Simbolo Especial, ;>
+<Palabra Reservada, end>
+<Palabra Reservada, end>
