@@ -37,7 +37,7 @@ RUN useradd -m -s /bin/bash docker_user && \
 EXPOSE 3389
 
 # Usar formato JSON para CMD (evita el warning y maneja mejor señales de cierre)
-CMD ["/bin/bash", "-c", "service dbus start && service xrdp start && tail -f /var/log/xrdp.log"]
+CMD ["/bin/bash", "-c", "rm -f /var/run/xrdp/*.pid /var/run/dbus/pid && service dbus start && service xrdp start && tail -f /var/log/xrdp.log"]
 
 
 # TO RUN container:
