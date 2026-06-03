@@ -1,0 +1,8 @@
+float x, y;
+int iterador;
+x = 1.5;
+while (iterador)
+    if (x)
+        iterador = iterador - 1;
+    else
+        x = x + 1.0;

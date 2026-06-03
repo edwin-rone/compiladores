@@ -1,24 +1,19 @@
-CXX?=clang++
-EXE=compiler
-CXXDEBUG= -g -Wall
-CXXSTD=-std=c++14
-CXXFLAGS= -Wno-deprecated-register -O0 $(CXXDEBUG) $(CXXSTD)
+# Variables de compilacion
+CXX = g++
+FLEX = flex++
+TARGET = analyzer
 
-CPPOBJ= main Parser ./AL/Lexer
+# Regla principal
+all: $(TARGET)
 
-FILES= $(addsuffix .cpp, $(CPPOBJ))
-OBJS = $(addsuffix .o, $(CPPOBJ))
+# Vinculacion y generacion del ejecutable final
+$(TARGET): Lexer.cpp Parser.cpp main.cpp
+	$(CXX) Lexer.cpp Parser.cpp main.cpp -o $(TARGET)
 
-CLEANLIST = $(OBJS) $(EXE)
+# Generacion del codigo C++ del analizador lexico
+Lexer.cpp: lexer.ll
+	$(FLEX) lexer.ll
 
-
-.PHONY: all
-all: wc
-
-wc: $(FILES)
-	$(MAKE) $(OBJS)
-	$(CXX) $(CXXFLAGS) -o $(EXE) $(OBJS)
-
-.PHONY: clean
+# Limpieza de archivos autogenerados y binarios
 clean:
-	rm -rf $(CLEANLIST)
+	rm -f $(TARGET) Lexer.cpp

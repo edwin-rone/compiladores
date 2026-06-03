@@ -20,17 +20,25 @@ namespace C_1
     ~Parser();
     
     void programa(); //función del símbolo incial
-    /**
-     *
-     *
-     * Funciones del resto de NTs 
-     *
-     *
-     */
-    
+    void declaraciones();
+    void declaraciones_prima();
+    void declaracion();
+    void tipo();
+    void lista_var();
+    void lista_var_prima();
+    void sentencias();
+    void sentencias_prima();
+    void sentencia();
+    void expresion();
+    void expresion_prima();
+    void termino();
+    void termino_prima();
+    void factor();
+
     Token eat();
     void error(string msg);
     void parse();
+    void match(Token expected); // Función para avanzar tokens
   };    
     
 }
