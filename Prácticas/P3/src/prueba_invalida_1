@@ -1,0 +1,3 @@
+int i;
+while i
+    i = i + 1;
