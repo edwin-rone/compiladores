@@ -30,36 +30,56 @@ using namespace std;
 
 %union {
   struct { //declarado para manejar los tipos de número posibles: 1.- entero, 2.- flotante.
-    int ival; //valor 
+    float fval; // Cambiado a float para soportar decimales 
     int tipo;
   } numero;
 }
 
 %token<numero> NUM
+%token EOL
 
-%left MAS
-%left MUL
+%left MAS MENOS
+%left MUL DIV
+%precedence UMINUS // Precedencia para el menos unario
 
 %nonassoc PARIZQ
 %nonassoc PARDER
 
 %type<numero> expresion
 
-%start line
+%start lineas
 
 %%
 
-line: expresion { cout << "Análisis léxico y sintáctico terminado.\nEl valor de la expresión ya evaluada es: " << $1.ival << endl; };
+lineas: lineas linea 
+    | linea 
+    ;
 
-expresion : expresion MAS expresion { $$.ival = $1.ival + $3.ival; };
-	  | expresion MUL expresion { $$.ival = $1.ival * $3.ival; };
-	  | PARIZQ expresion PARDER { $$ = $2; };
-	  | NUM { $$ = $1; };
+line: expresion EOL { cout << "Análisis léxico y sintáctico terminado.\nEl valor de la expresión ya evaluada es: " << $1.fval << endl; }
+    | EOL { /* Ignorar lineas en blanco */ }
+    ;
+
+expresion : expresion MAS expresion { $$.fval = $1.fval + $3.fval; }
+    | expresion MENOS expresion { $$.fval = $1.fval - $3.fval; }
+	| expresion MUL expresion { $$.fval = $1.fval * $3.fval; }
+    | expresion DIV expresion { 
+        if($3.fval == 0) {
+            cout << "Error matematico: Division por cero." << endl;
+            $$.fval = 0;
+        } else {
+            $$.fval = $1.fval / $3.fval; 
+        }
+    }
+    | MENOS expresion %prec UMINUS { $$.fval = -$2.fval; } // Menos unario
+	| PARIZQ expresion PARDER { $$ = $2; };
+	| NUM { $$ = $1; }
+    ;
+
 
 %%
 
 void calc::Parser::error(const std::string& msg) {
-    std::cerr << msg << '\n';
+    std::cerr << "Error de sintaxis: " << msg << '\n';
 }
 
 
