@@ -20,13 +20,32 @@ bool SymTab::addSym(string id, int dir, int tipo, string cat) {
     // 2. Si ya existe, retornar false
     // 3. Si no existe, crear un Sym(dir, tipo, cat) e insertarlo en syms[id]
     // 4. Retornar true
-    return false; // Placeholder
+    
+    // 1 y 2. Si ya existe en la tabla, no lo agregamos y regresamos false
+    if (existe(id)) {
+        return false; 
+    }
+    
+    // 3. Si no existe, lo creamos y lo guardamos en el mapa
+    syms[id] = Sym(dir, tipo, cat);
+    
+    // 4. Retornamos true porque se guardó bien
+    return true;
 }
 
 // Versión para funciones (incluye lista de parámetros)
 bool SymTab::addSym(string id, int dir, int tipo, string cat, vector<int> params) {
     // TODO: Implementar (similar al anterior pero usando el constructor con params)
-    return false; // Placeholder
+    
+    // Hacemos la misma validación que arriba
+    if (existe(id)) {
+        return false;
+    }
+    
+    // Lo guardamos usando el constructor que acepta los parámetros
+    syms[id] = Sym(dir, tipo, cat, params);
+    
+    return true;
 }
 
 // ============================================================
@@ -41,7 +60,9 @@ bool SymTab::addSym(string id, int dir, int tipo, string cat, vector<int> params
 bool SymTab::existe(string id) {
     // TODO: Implementar
     // Usar: syms.find(id) != syms.end()
-    return false; // Placeholder
+    
+    // Usamos find() para buscar en el mapa. Si no llega al final (end), es que sí lo encontró.
+    return syms.find(id) != syms.end();
 }
 
 // Obtiene la dirección de un símbolo

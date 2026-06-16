@@ -91,7 +91,10 @@ P : {
         // 1. dir ← 0
         // 2. Crear nueva tabla de símbolos global: new SymTab()
         // 3. Empujarla en pilaTs: pilaTs.push(...)
+        
+        // 1. dir ← 0
         dir = 0;
+        // 2 y 3. Crear nueva tabla de símbolos global y empujarla
         pilaTs.push(new SymTab());
     }
     D

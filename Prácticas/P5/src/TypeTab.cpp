@@ -38,7 +38,18 @@ int TypeTab::addArrayType(int numElems, int tipoBase) {
     // 3. Almacenarlo en types[nextId]
     // 4. Incrementar nextId
     // 5. Retornar el ID asignado (nextId - 1)
-    return -1; // Placeholder
+    
+    // 1. Calcular el tamaño: numElems * tamaño del tipo base
+    int tam = numElems * getTam(tipoBase);
+    
+    // 2 y 3. Crear el tipo y guardarlo en el mapa
+    types[nextId] = Type("array", tam, numElems, tipoBase);
+    
+    // 4 y 5. Guardar el ID actual, incrementar y retornar
+    int idAsignado = nextId;
+    nextId++;
+    
+    return idAsignado;
 }
 
 // ============================================================
@@ -56,7 +67,15 @@ int TypeTab::addStructType(int tam) {
     // 2. Almacenarlo en types[nextId]
     // 3. Incrementar nextId
     // 4. Retornar el ID asignado (nextId - 1)
-    return -1; // Placeholder
+
+    // 1 y 2. Crear el tipo struct y guardarlo en el mapa
+    types[nextId] = Type("struct", tam);
+    
+    // 3 y 4. Incrementar y retornar
+    int idAsignado = nextId;
+    nextId++;
+    
+    return idAsignado;
 }
 
 // Obtiene el tamaño de un tipo dado su ID

@@ -1,0 +1,12 @@
+int iterador;
+float acumulador;
+iterador = 5;
+acumulador = 0.0;
+while (iterador) {
+    if (acumulador) {
+        acumulador = acumulador + 1.5;
+    } else {
+        acumulador = acumulador - 1.5;
+    }
+    iterador = iterador - 1;
+}
