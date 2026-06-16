@@ -1,0 +1,11 @@
+int a, b;
+float c;
+int [5] arreglo;
+
+register { 
+    int x; 
+    float y; 
+} punto;
+
+def int miFuncion (int param1, float param2) {
+}

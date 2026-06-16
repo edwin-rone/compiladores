@@ -2,6 +2,7 @@
     #include "Parser.hpp"
     #include "headers/Lexer.hpp"
 
+    #undef YY_DECL
     #define YY_DECL int C1::Lexer::lex(C1::Parser::semantic_type *yylval)
 %}
 

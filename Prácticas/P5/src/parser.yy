@@ -39,6 +39,9 @@
     // Variable auxiliar para propagar L.tipo (atributo heredado)
     int currentType = 0;
 
+    // Variable auxiliar para propagar A.base (heredado de B)
+    int currentBaseType = 0;
+
     // Variable para el tipo de retorno de funciones
     int tipoReturnFunc = 0;
 
@@ -141,6 +144,16 @@ D : T L SEMICOLON D
         //    d) tipoReturnFunc = $2.tipo   ← guardar tipo de retorno
         //    Nota: Aquí también se generaría label(id) si hubiera generación de código
         // 3. Sino: cerr << "Error: El id " << id << " ya fue declarado" << endl;
+
+        std::string id = $3;
+        if (!pilaTs.bottom()->existe(id)) {
+            pilaTs.push(new SymTab()); // Nuevo alcance para la función
+            pilaDir.push(dir);         // Guardar dir actual
+            dir = 0;                   // Reiniciar dir para variables locales
+            tipoReturnFunc = $2.tipo;  // Guardar tipo de retorno
+        } else {
+            std::cerr << "Error: La funcion '" << id << "' ya fue declarada." << std::endl;
+        }
     }
     LBRACE S RBRACE
     {
@@ -152,6 +165,18 @@ D : T L SEMICOLON D
         // 4. Registrar la función en alcance global:
         //    pilaTs.bottom()->addSym(id, -1, $2.tipo, "func", listaParams)
         // 5. listaParams.clear()             ← limpiar para la siguiente función
+
+        // Acción final (al salir de la función)
+        std::string id = $3;
+        SymTab* tsFunc = pilaTs.pop(); // Retiramos la tabla de la función
+        
+        dir = pilaDir.top();           // Restaurar dir global
+        pilaDir.pop();
+        
+        // Registrar la función en alcance global (bottom)
+        pilaTs.bottom()->addSym(id, -1, $2.tipo, "func", listaParams);
+        listaParams.clear();           // Limpiar lista para la siguiente función
+        
         if ($3) free($3);
     }
     D
@@ -176,7 +201,7 @@ T : B A
         // En Bison, los heredados se manejan con variables globales
         // o acciones intermedias (mid-rule actions).
         $$.tipo = $2.tipo;
-        currentType = $$.tipo;
+        currentType = $$.tipo; // Propagamos para las variables
     }
   // T → register { D }
   // Regla semántica:
@@ -191,6 +216,10 @@ T : B A
         // 1. Empujar nueva tabla de símbolos: pilaTs.push(new SymTab())
         // 2. Guardar dir actual: pilaDir.push(dir)
         // 3. Reiniciar dir: dir ← 0
+
+        pilaTs.push(new SymTab()); // Nuevo alcance para el struct
+        pilaDir.push(dir);         // Guardar dir
+        dir = 0;                   // Reiniciar dir para sumar los campos del struct
     }
     D RBRACE
     {
@@ -202,7 +231,15 @@ T : B A
         // 4. Restaurar dir: dir = pilaDir.top(); pilaDir.pop()
         // 5. Asignar $$.tipo con el ID del nuevo tipo struct
         // 6. Actualizar currentType
-        $$.tipo = -1; // Placeholder
+        int tamStruct = dir;           // El tamaño del struct es la suma de sus campos
+        SymTab* tsStruct = pilaTs.pop(); 
+        
+        int idNuevoStruct = tablaTipos.addStructType(tamStruct); // Registrar en tabla de tipos
+        
+        dir = pilaDir.top();           // Restaurar dir global
+        pilaDir.pop();
+        
+        $$.tipo = idNuevoStruct;
         currentType = $$.tipo;
     }
   ;
@@ -214,8 +251,9 @@ B : INT
         // TODO: Implementar
         // $$.tipo = tablaTipos.getId("int")
         // $$.base = $$.tipo (se usará como A.base)
-        $$.tipo = 0; // Placeholder - debería ser tablaTipos.getId("int")
+        $$.tipo = tablaTipos.getId("int");
         $$.base = $$.tipo;
+        currentBaseType = $$.tipo; // Guardamos globalmente para que A lo herede
     }
   // B → float
   // Regla semántica: B.tipo = tablaTipos.getId("float")
@@ -224,8 +262,9 @@ B : INT
         // TODO: Implementar
         // $$.tipo = tablaTipos.getId("float")
         // $$.base = $$.tipo
-        $$.tipo = 1; // Placeholder - debería ser tablaTipos.getId("float")
+        $$.tipo = tablaTipos.getId("float");
         $$.base = $$.tipo;
+        currentBaseType = $$.tipo;
     }
   ;
 
@@ -244,7 +283,13 @@ A : LBRACKET NUM RBRACKET A
         // 3. $$.tipo = tablaTipos.addArrayType($2, $4.tipo)
         //    donde $4.tipo es A₁.tipo
         // 4. $$.base = $1... (heredado, pero no se usa aquí)
-        $$.tipo = -1; // Placeholder
+        if ($2 > 0) {
+            // Se le pasa el número de elementos y el tipo del A₁
+            $$.tipo = tablaTipos.addArrayType($2, $4.tipo); 
+        } else {
+            std::cerr << "Error: El indice del arreglo debe ser mayor a cero." << std::endl;
+            $$.tipo = $4.tipo; // Fallback para evitar crashear
+        }
     }
   // A → ε
   // Regla semántica: A.tipo = A.base
@@ -259,7 +304,8 @@ A : LBRACKET NUM RBRACKET A
         // Solución: Usar $0 o una variable global.
         // Aquí usamos $<attr>0.base (referencia al símbolo anterior en la pila)
         // O más simple: una variable global baseType
-        $$.tipo = $<attr>0.base;
+        // Hereda el tipo base guardado desde B
+        $$.tipo = currentBaseType;
     }
   ;
 
@@ -276,6 +322,10 @@ F : T ID COMMA F
         // 2. pilaTs.top()->addSym(id, dir, $1.tipo, "param")
         // 3. dir += tablaTipos.getTam($1.tipo)
         // 4. listaParams.push_back($1.tipo)
+        std::string id = $2;
+        pilaTs.top()->addSym(id, dir, $1.tipo, "param"); // Guardar como parametro
+        dir += tablaTipos.getTam($1.tipo);              // Aumentar la memoria local
+        listaParams.push_back($1.tipo);                 // Registrar firma
         if ($2) free($2);
     }
   | T ID
@@ -285,6 +335,10 @@ F : T ID COMMA F
         // 2. pilaTs.top()->addSym(id, dir, $1.tipo, "param")
         // 3. dir += tablaTipos.getTam($1.tipo)
         // 4. listaParams.push_back($1.tipo)
+        std::string id = $2;
+        pilaTs.top()->addSym(id, dir, $1.tipo, "param");
+        dir += tablaTipos.getTam($1.tipo);
+        listaParams.push_back($1.tipo);
         if ($2) free($2);
     }
   | /* ε */
@@ -321,6 +375,13 @@ L : L COMMA ID
         // 4. Si existe: cerr << "Error: La variable " << id << " ya fue declarada" << endl;
         //
         // Nota: L.tipo se propaga vía la variable global currentType
+        std::string id = $3;
+        if (!pilaTs.top()->existe(id)) {
+            pilaTs.top()->addSym(id, dir, currentType, "var");
+            dir += tablaTipos.getTam(currentType); // Aumentar memoria
+        } else {
+            std::cerr << "Error: La variable '" << id << "' ya fue declarada en este alcance." << std::endl;
+        }
         if ($3) free($3);
     }
   // L → id
@@ -333,6 +394,13 @@ L : L COMMA ID
         // 3. Si no existe: pilaTs.top()->addSym(id, dir, currentType, "var")
         //                   dir += tablaTipos.getTam(currentType)
         // 4. Si existe: cerr << "Error: La variable " << id << " ya fue declarada" << endl;
+        std::string id = $1;
+        if (!pilaTs.top()->existe(id)) {
+            pilaTs.top()->addSym(id, dir, currentType, "var");
+            dir += tablaTipos.getTam(currentType);
+        } else {
+            std::cerr << "Error: La variable '" << id << "' ya fue declarada en este alcance." << std::endl;
+        }
         if ($1) free($1);
     }
   ;
