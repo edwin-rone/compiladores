@@ -36,7 +36,7 @@ using namespace std;
 
 %%
 
-programa: declaraciones sentencias { cout << "Analisis concluido: Programa valido segun la gramatica C_1." << endl; };
+programa: declaraciones sentencias;
 
 declaraciones: declaraciones declaracion
              | declaracion
@@ -93,7 +93,10 @@ int main(int argc, char *argv[]){
     istream in(&fb);
     c1::Lexer lexer(&in);
     c1::Parser parser(&lexer);
-    parser.parse();
+    // Validamos que todo el archivo se leyo correctamente
+    if (parser.parse() == 0) {
+        cout << "Análisis concluido: Programa valido segun la gramatica C_1." << endl;
+    }
     fb.close();
     return 0;
 }

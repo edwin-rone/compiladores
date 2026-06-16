@@ -24,52 +24,53 @@ WSPC [ \t]+
 
 
 "+"	{
-	 cout << "Terminal + detectado" << endl;	
-	 return Parser::token::MAS;
-	}
+	cout << "Terminal + detectado" << endl;	
+	return Parser::token::MAS;
+}
 
 "*"	{
-	 cout << "Terminal * detectado" << endl;	
-	 return Parser::token::MUL;
-	}
+	cout << "Terminal * detectado" << endl;	
+	return Parser::token::MUL;
+}
 
 "("	{
-	 cout << "Terminal ( detectado" << endl;	
-	 return Parser::token::PARIZQ;
-	}
+	cout << "Terminal ( detectado" << endl;	
+	return Parser::token::PARIZQ;
+}
 
 ")"	{
-	 cout << "Terminal ) detectado" << endl;	
-	 return Parser::token::PARDER;
-	}
+	cout << "Terminal ) detectado" << endl;	
+	return Parser::token::PARDER;
+}
 
-" \ n " { 
+"\n" { 
 	cout << "Salto de línea detectado" << endl;
-	return Parser :: token :: EOL ; }
+	return Parser :: token :: EOL ; 
+}
 
 {DIG}+	{
-	 cout << "Terminal numérico " << yytext << " detectado" << endl;
-	 yylval->numero.fval = atof(yytext);
-	 yylval->numero.tipo = 1; /* 1: Entero, 2: Flotante */
-	 return Parser::token::NUM;
-	}
-
-{ DIG }+\.{ DIG }+ {
+	cout << "Terminal numérico " << yytext << " detectado" << endl;
 	yylval->numero.fval = atof(yytext);
-	yylval->numero.tipo = 2;
-	return Parser::token::NUM ;
+	yylval->numero.tipo = 1; /* 1: Entero, 2: Flotante */
+	return Parser::token::NUM;
+}
+
+{DIG}+\.{DIG}+ {
+    yylval->numero.fval = atof(yytext);
+    yylval->numero.tipo = 2; /* 2: Flotante */
+    return Parser::token::NUM;
 }
 
 {WSPC}  { /* Ignoramos espacios en blanco */ }
 
 .	{
-	  cout << "Error léxico en la línea: " << yylineno << endl;
-	}
+	cout << "Error léxico en la línea: " << yylineno << endl;
+}
 
 
 <<EOF>> {	
-         yyterminate();
-        }
+    yyterminate();
+}
 
 
 %%

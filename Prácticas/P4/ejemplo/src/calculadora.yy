@@ -55,7 +55,7 @@ lineas: lineas linea
     | linea 
     ;
 
-line: expresion EOL { cout << "Análisis léxico y sintáctico terminado.\nEl valor de la expresión ya evaluada es: " << $1.fval << endl; }
+linea: expresion EOL { cout << "Análisis léxico y sintáctico terminado.\nEl valor de la expresión ya evaluada es: " << $1.fval << endl; }
     | EOL { /* Ignorar lineas en blanco */ }
     ;
 
